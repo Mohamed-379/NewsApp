@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/models/categories_dm.dart';
@@ -75,17 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 16,),
           InkWell(
               onTap: () {
-                setState(() {
-                  currentTab = CategoriesTab(onCategoryClick);
-                });
+                widgetNavigation(currentTab, CategoriesTab(onCategoryClick));
               },
               child: buildRow(Icons.list, "Categories")),
           const SizedBox(height: 8,),
           InkWell(
               onTap: () {
-                setState(() {
-                  currentTab = const SettingsTab();
-                });
+                widgetNavigation(currentTab, const SettingsTab());
               },
               child: buildRow(Icons.settings, "Settings"))
         ],
@@ -130,5 +128,12 @@ class _HomeScreenState extends State<HomeScreen> {
       suffixIcon: const Icon(Icons.add, color: Colors.black,),
       prefixIcon: const Icon(Icons.search,),
     );
+  }
+
+  widgetNavigation(Widget currentWidget, Widget nextWidget)
+  {
+    setState(() {
+      currentTab = nextWidget;
+    });
   }
 }

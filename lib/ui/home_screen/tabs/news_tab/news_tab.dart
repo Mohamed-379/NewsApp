@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/data/api/api_manager.dart';
 import 'package:news_app/data/model/sources_responses.dart';
+import 'package:news_app/ui/home_screen/tabs/news_tab/news_tab_model_view.dart';
+import 'package:news_app/widgets/loadeing_widget.dart';
+import 'package:provider/provider.dart';
 
 import 'news_list/news_list.dart';
 
@@ -14,27 +16,43 @@ class NewsTab extends StatefulWidget {
 }
 
 class _NewsTabState extends State<NewsTab> {
+  late NewsTabModelView newsTabModelView = NewsTabModelView();
   int currentIndex = 0;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      newsTabModelView.getSources(widget.categoryId);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-          future: APIManager.getSources(widget.categoryId),
-          builder: (context, snapshot) {
-            if(snapshot.hasData)
-              {
-                return buildTabs(snapshot.data!);
-              }
-            else if(snapshot.hasError)
-              {
-                return Text(snapshot.error.toString());
-              }
+    Widget currentView;
+
+    return ChangeNotifierProvider(
+      create: (_) => newsTabModelView,
+        child: Consumer<NewsTabModelView>(
+          builder: (context, newsTabModelView, _) {
+            if(newsTabModelView.isLoading)
+            {
+              currentView = const LoadingWidget();
+            }
+            else if(newsTabModelView.sources.isNotEmpty)
+            {
+              currentView = buildTabs(newsTabModelView.sources);
+            }
             else
-              {
-                return const Center(child: CircularProgressIndicator());
-              }
+            {
+              currentView = ErrorWidget(newsTabModelView.errorMessage??"");
+            }
+
+            return currentView;
           },
-      );
+            )
+    );
   }
 
   Widget buildTabs(List<Sources> list) {

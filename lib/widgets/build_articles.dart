@@ -38,7 +38,7 @@ class BuildArticles extends StatelessWidget {
                 Text(articles.title ?? "", style: const TextStyle(fontSize: 14,fontFamily: "Poppins", fontWeight: FontWeight.bold)),
               ],
             )),
-            Text("${DateTime.parse(articles.publishedAt ?? "").hour.toString()} hours ago",
+            Text("${DateTime.parse(articles.publishedAt ?? "").hour} hours ago",
               textAlign: TextAlign.end, style: const TextStyle(fontFamily: "Inter", color: Colors.grey),)
           ],
         ),
