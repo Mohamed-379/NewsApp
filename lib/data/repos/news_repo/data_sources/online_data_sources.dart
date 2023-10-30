@@ -1,17 +1,16 @@
 import 'dart:convert';
-
 import 'package:http/http.dart';
 import 'package:news_app/data/model/articles_responses.dart';
 import 'package:news_app/data/model/sources_responses.dart';
 
-abstract class APIManager
+class OnlineDataSources
 {
   static const String urlBase = "newsapi.org";
   static const String sourceEndPoint = "/v2/top-headlines/sources";
-  static const String apiKey = "faf82f8c8199487ba373e64d67d5463b";
+  static const String apiKey = "8ee169f5bba84007a4ad03ac573b3573";
   static const String articleEndPoint = "/v2/everything";
 
-  static Future<List<Sources>> getSources(String category) async
+  Future<SourcesResponses> getSources(String category) async
   {
     Uri url = Uri.parse("https://$urlBase$sourceEndPoint?apiKey=$apiKey&category=$category");
     Response response = await get(url);
@@ -21,7 +20,7 @@ abstract class APIManager
         response.statusCode < 300 &&
         sourcesResponses.sources?.isNotEmpty == true)
       {
-        return sourcesResponses.sources!;
+        return sourcesResponses;
       }
     throw Exception(sourcesResponses.message);
   }

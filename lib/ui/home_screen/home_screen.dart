@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/models/categories_dm.dart';
@@ -135,5 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       currentTab = nextWidget;
     });
+    Navigator.pop(context);
   }
 }

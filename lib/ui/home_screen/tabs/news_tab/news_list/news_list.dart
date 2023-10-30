@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/data/api/api_manager.dart';
+import 'package:news_app/data/repos/news_repo/data_sources/online_data_sources.dart';
 import 'package:news_app/data/model/articles_responses.dart';
 import 'package:news_app/widgets/build_articles.dart';
+import 'package:news_app/widgets/error_widget.dart';
 import 'package:news_app/widgets/loadeing_widget.dart';
 
 class NewsList extends StatelessWidget {
@@ -12,7 +13,7 @@ class NewsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: APIManager.getArticles(sourceId),
+        future: OnlineDataSources.getArticles(sourceId),
         builder: (context, snapshot) {
           if(snapshot.hasData)
           {
@@ -20,7 +21,7 @@ class NewsList extends StatelessWidget {
           }
           else if(snapshot.hasError)
           {
-            return ErrorWidget(snapshot.error.toString());
+            return ErrorView(message: snapshot.error.toString());
           }
           else
           {
