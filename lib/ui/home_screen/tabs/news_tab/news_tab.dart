@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/data/model/sources_responses.dart';
 import 'package:news_app/ui/home_screen/tabs/news_tab/news_tab_model_view.dart';
 import 'package:news_app/widgets/loadeing_widget.dart';
-import 'package:provider/provider.dart';
-
+import '../../../../widgets/error_widget.dart';
 import 'news_list/news_list.dart';
 
 class NewsTab extends StatefulWidget {
@@ -32,27 +32,25 @@ class _NewsTabState extends State<NewsTab> {
   Widget build(BuildContext context) {
     Widget currentView;
 
-    return ChangeNotifierProvider(
-      create: (_) => newsTabModelView,
-        child: Consumer<NewsTabModelView>(
-          builder: (context, newsTabModelView, _) {
-            if(newsTabModelView.isLoading)
-            {
-              currentView = const LoadingWidget();
-            }
-            else if(newsTabModelView.sources.isNotEmpty)
-            {
-              currentView = buildTabs(newsTabModelView.sources);
-            }
-            else
-            {
-              currentView = ErrorWidget(newsTabModelView.errorMessage??"");
-            }
+    return BlocBuilder<NewsTabModelView, NewsTabStates>(
+      bloc: newsTabModelView,
+      builder: (context, state) {
+        if(state is NewsTabLoadingState)
+        {
+          currentView = const LoadingWidget();
+        }
+        else if(state is NewsTabSuccessState)
+        {
+          currentView = buildTabs(state.sources);
+        }
+        else
+        {
+          currentView = ErrorView(message: (state as NewsTabErrorState).message);
+        }
 
-            return currentView;
-          },
-            )
-    );
+        return currentView;
+      },
+        );
   }
 
   Widget buildTabs(List<Sources> list) {
